@@ -1,0 +1,53 @@
+{
+    "name": "ecmchow/smtp-mailer",
+    "description": "SMTP mail sending and scheduling service",
+    "version": "1.1.0",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Eric Chow",
+            "email": "contact@cmchow.com",
+            "homepage": "https://cmchow.com"
+        }
+    ],
+    "config": {
+        "vendor-dir": "vendor"
+    },
+    "require": {
+		"php": ">=7.4",
+		"ext-curl": "*",
+		"ext-json": "*",
+		"ext-mbstring": "*",
+        "workerman/workerman": "^4.0",
+        "workerman/crontab": "^1.0",
+        "phpmailer/phpmailer": "^6.5",
+        "opis/json-schema": "^2.3"
+	},
+    "autoload": {
+		"psr-4": {
+			"Core\\": "Core"
+		}
+	},
+    "archive": {
+        "exclude": [".github", ".env", ".git", ".drone.yml", ".gitlab-ci.yml", ".php-cs-fixer.dist.php", "box.json", "phpunit.xml", "/dist", "/vendor", "/test", "/tools", "*.lock", "*.log"]
+    },
+    "scripts": {
+        "autoload": "@composer dump-autoload -o",
+        "build": "php tools/box.phar compile",
+        "pack": "@composer archive --dir dist --file smtp-mailer --format=zip",
+        "style-check": [
+            "php tools/php-cs-fixer-v3.phar fix Core --using-cache=no --diff --dry-run",
+            "php tools/php-cs-fixer-v3.phar fix start-mailer.php --using-cache=no --diff --dry-run"
+        ],
+        "style-fix": [
+            "php tools/php-cs-fixer-v3.phar fix Core --using-cache=no",
+            "php tools/php-cs-fixer-v3.phar fix start-mailer.php --using-cache=no"
+        ],
+        "test-unit": "php tools/phpunit-9.5.phar --testsuite core-units",
+        "test-e2e": "test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/e2e.log -e start-mailer.php",
+        "test-e2e:redis": "test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/e2e-redis.log -e start-mailer.php",
+        "test-build": "test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/build.log -e dist/smtp-mailer.phar -p",
+        "test-build:redis": "test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/build-redis.log -e dist/smtp-mailer.phar -p"
+    }
+}

@@ -1,0 +1,18 @@
+# Miscellaneous
+*~
+*.crt
+*.key
+*.log
+*.pem
+._*
+.cache
+.directory
+.DS_Store
+
+# Composer files
+*.lock
+/vendor
+
+# Project files
+/*.env
+/dist

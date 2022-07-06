@@ -1,0 +1,30 @@
+<phpunit bootstrap="vendor/autoload.php" colors="true" stopOnFailure="true" testdox="true" cacheResult="false">
+  <testsuites>
+    <testsuite name="core-units">
+      <file>test/unit/ValidatorTest.php</file>
+      <file>test/unit/ConfigTest.php</file>
+      <file>test/unit/CryptoTest.php</file>
+      <file>test/unit/HasherTest.php</file>
+      <file>test/unit/LoggerTest.php</file>
+      <file>test/unit/MailerTest.php</file>
+    </testsuite>
+    <testsuite name="service-basic">
+      <file>test/e2e/ServiceBasicTest.php</file>
+    </testsuite>
+    <testsuite name="service-ssl">
+      <file>test/e2e/ServiceSslTest.php</file>
+    </testsuite>
+    <testsuite name="service-auth">
+      <file>test/e2e/ServiceAuthTest.php</file>
+    </testsuite>
+    <testsuite name="service-auth-ssl">
+      <file>test/e2e/ServiceAuthSslTest.php</file>
+    </testsuite>
+    <testsuite name="redis-basic">
+      <file>test/e2e/RedisBasicTest.php</file>
+    </testsuite>
+    <testsuite name="redis-auth">
+      <file>test/e2e/RedisAuthTest.php</file>
+    </testsuite>
+  </testsuites>
+</phpunit>

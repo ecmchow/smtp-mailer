@@ -1,0 +1,83 @@
+kind: pipeline
+type: docker
+name: Unit & Build Test (lowest)
+
+steps:
+- name: test
+  image: phusion/baseimage:focal-1.2.0
+  commands:
+  - LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
+  - apt-get update && apt install -y redis-server php7.4 php7.4-common php7.4-cli php7.4-curl php7.4-mbstring php7.4-redis php7.4-xml php7.4-xdebug
+  - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+  - chmod -R +x tools
+  - composer install
+  - tools/php-cs-fixer-v3.phar fix Core --using-cache=no --diff --dry-run --verbose
+  - tools/php-cs-fixer-v3.phar fix start-mailer.php --using-cache=no --diff --dry-run --verbose
+  - php tools/phpunit-9.5.phar --testsuite core-units
+  - openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -keyout test/selfsigned.key -out test/selfsigned.crt
+  - service redis-server restart
+  - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/e2e.log -e start-mailer.php && sleep 0.1
+  - less test/e2e.log
+  - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/e2e-redis.log -e start-mailer.php && sleep 0.1
+  - less test/e2e-redis.log
+  - php tools/box.phar compile
+  - chmod +x ./dist/smtp-mailer.phar
+  - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/build.log -e dist/smtp-mailer.phar -p
+  - less test/build.log
+  - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/build-redis.log -e dist/smtp-mailer.phar -p
+  - less test/build-redis.log
+
+---
+kind: pipeline
+type: docker
+name: Unit & Build Test (latest)
+
+steps:
+- name: test
+  image: phusion/baseimage:focal-1.2.0
+  commands:
+  - LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
+  - apt-get update && apt install -y redis-server php8.1 php8.1-common php8.1-cli php8.1-curl php8.1-mbstring php8.1-redis php8.1-xml php8.1-xdebug
+  - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+  - chmod -R +x tools
+  - composer install
+  - tools/php-cs-fixer-v3.phar fix Core --using-cache=no --diff --dry-run --verbose
+  - tools/php-cs-fixer-v3.phar fix start-mailer.php --using-cache=no --diff --dry-run --verbose
+  - php tools/phpunit-9.5.phar --testsuite core-units
+  - openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -keyout test/selfsigned.key -out test/selfsigned.crt
+  - service redis-server restart
+  - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/e2e.log -e start-mailer.php && sleep 0.1
+  - less test/e2e.log
+  - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/e2e-redis.log -e start-mailer.php && sleep 0.1
+  - less test/e2e-redis.log
+  - php tools/box.phar compile
+  - chmod +x ./dist/smtp-mailer.phar
+  - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/build.log -e dist/smtp-mailer.phar -p
+  - less test/build.log
+  - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/build-redis.log -e dist/smtp-mailer.phar -p
+  - less test/build-redis.log
+
+---
+kind: pipeline
+type: docker
+name: CI
+
+steps:
+- name: notify
+  image: plugins/slack
+  settings:
+    webhook:
+      from_secret: SLACK_WEBHOOK
+  when:
+    status:
+    - success
+    - failure
+
+depends_on:
+- Unit & Build Test (lowest)
+- Unit & Build Test (latest)
+
+trigger:
+  status:  # always run pipeline regardless of status
+  - success
+  - failure

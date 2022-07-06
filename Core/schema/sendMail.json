@@ -1,0 +1,227 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "schema://ecmchow/smtp-mailer/sendMail.json",
+    "type": "object",
+    "properties": {
+        "to": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "prefixItems": [
+                            {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 320,
+                                "format": "email"
+                            },
+                            {
+                                "type": "string",
+                                "minLength": 1
+                            }
+                        ]
+                    }, 
+                    {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 320,
+                        "format": "email"
+                    }
+                ]
+            }
+        },
+        "ccList": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "prefixItems": [
+                            {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 320,
+                                "format": "email"
+                            },
+                            {
+                                "type": "string",
+                                "minLength": 1
+                            }
+                        ]
+                    },
+                    {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 320,
+                        "format": "email"
+                    }
+                ]
+            }
+        },
+        "bccList": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "prefixItems": [
+                            {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 320,
+                                "format": "email"
+                            },
+                            {
+                                "type": "string",
+                                "minLength": 1
+                            }
+                        ]
+                    },
+                    {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 320,
+                        "format": "email"
+                    }
+                ]
+            }
+        },
+        "replyTo": {
+            "type": "array",
+            "items": {
+                "oneOf": [
+                    {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "prefixItems": [
+                            {
+                                "type": "string",
+                                "minLength": 1,
+                                "maxLength": 320,
+                                "format": "email"
+                            },
+                            {
+                                "type": "string",
+                                "minLength": 1
+                            }
+                        ]
+                    },
+                    {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 320,
+                        "format": "email"
+                    }
+                ]
+            }
+        },
+        "attachments": {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 2,
+                "items": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "embedded": {
+            "type": "array",
+            "items": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 3,
+                "items": {
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        },
+        "subject": {
+            "type": "string",
+            "minLength": 1
+        },
+        "body": {
+            "type": "string",
+            "minLength": 1
+        },
+        "useTemplate": {
+            "type": "string",
+            "minLength": 1
+        },
+        "replaceContent": {
+            "type": "object",
+            "additionalProperties": true
+        },
+        "fromEmail": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 320,
+            "format": "email"
+        },
+        "fromName": {
+            "type": "string",
+            "minLength": 1
+        },
+        "smtpHost": {
+            "type": "string",
+            "minLength": 1,
+            "format": "hostname"
+        },
+        "smtpUser": {
+            "type": "string",
+            "minLength": 1
+        },
+        "smtpPassword": {
+            "type": "string",
+            "minLength": 0
+        },
+        "smtpEncryption": {
+            "type": "string",
+            "enum": ["tls", "ssl"]
+        },
+        "smtpPort": {
+            "type": "integer",
+            "enum": [587, 465]
+        },
+        "timeout": {
+            "type": "integer",
+            "minimum": 1
+        },
+        "scheduleTime": {
+            "type": "integer"
+        },
+        "failToDelivered": {
+            "type": "integer"
+        }
+    },
+    "required": [
+        "to",
+        "ccList",
+        "bccList",
+        "subject"
+    ],
+    "oneOf": [
+        {
+            "required": [
+                "body"
+            ]
+        },
+        {
+            "required": [
+                "useTemplate"
+            ]
+        }
+    ],
+    "additionalProperties": false
+}
