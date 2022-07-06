@@ -17,7 +17,7 @@ before_script:
 test:7.4:
   stage: test
   script:
-    - apt install -y redis-server php7.4 php7.4-common php7.4-cli php7.4-curl php7.4-mbstring php7.4-redis php7.4-xml php7.4-xdebug
+    - apt install -y redis-server php7.4 php7.4-common php7.4-cli php7.4-curl php7.4-mbstring php7.4-redis php7.4-xml php7.4-xdebug php7.4-zip
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - chmod -R +x tools
     - composer install
@@ -42,7 +42,7 @@ test:7.4:
 test:8.1:
   stage: test
   script:
-    - apt install -y redis-server php8.1 php8.1-common php8.1-cli php8.1-curl php8.1-mbstring php8.1-redis php8.1-xml php8.1-xdebug
+    - apt install -y redis-server php8.1 php8.1-common php8.1-cli php8.1-curl php8.1-mbstring php8.1-redis php8.1-xml php8.1-xdebug php8.1-zip
     - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
     - chmod -R +x tools
     - composer install
