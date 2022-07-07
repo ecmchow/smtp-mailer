@@ -111,7 +111,7 @@ Success Response
 Failed Response
 ```json
 {
-   "status": "success",
+   "status": "error",
    "data": null,
    "message": "Redis store or running in single worker is required"
 }
@@ -280,7 +280,7 @@ Failed Response
 
 | Name | Type | Description |
 | :--- | :--- | :--- |
-| `getQueueList` | `int` or `null` | Number of maximum display items (Default/maximum: 500) |
+| `getQueueList` | `object` or `null` | Pagination (Default/maximum: 500 items) |
 
 Retrieve current queue with default limit
 ```json
@@ -298,6 +298,11 @@ Retrieve current queue with maximum 100 items and pagination (zero-indexed)
     }
 }
 ```
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `limit` | `int` | **Optional**. items per page/request (max 500 items)  |
+| `page` | `int` | **Optional**. page number (0 indexed)  |
 
 Response
 ```json
@@ -434,7 +439,7 @@ Response
 
 | Name | Type | Description |
 | :--- | :--- | :--- |
-| `getTemplateList` | `int` or `null` | Number of maximum display items (Default/maximum: 500) |
+| `getTemplateList` | `object` or `null` | Pagination (Default/maximum: 500 items) |
 
 Retrieve all mail template with default limit
 ```json
@@ -452,6 +457,11 @@ Retrieve all mail template with maximum 100 items and pagination (zero-indexed)
     }
 }
 ```
+
+| Parameter | Type | Description |
+| :--- | :--- | :--- |
+| `limit` | `int` | **Optional**. items per page/request (max 500 items)  |
+| `page` | `int` | **Optional**. page number (0 indexed)  |
 
 Response
 ```json

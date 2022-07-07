@@ -49,7 +49,7 @@ SMTP Mailer service require an env file in INI format. An example env file is in
 | `MAILER_PORT` | `int` | 3000 | **Required**. Service listening port number. |
 | `MAILER_SSL_CERT` | `string` | "" | **Optional**. SSL certificate filepath. E.g. "/path/to/selfsigned.crt"  |
 | `MAILER_SSL_KEY` | `string` | "" | **Optional**. SSL private key filepath. E.g. "/path/to/selfsigned.key"  |
-| `MAILER_WORKERS` | `int` | 4 | **Required**. Number of spawned service workers. |
+| `MAILER_WORKERS` | `int` | 1 | **Required**. Number of spawned service workers. |
 | `MAILER_MAX_MEMORY` | `int` | 64 (in MB) | **Optional**. Service will auto-restart if memory usage exceeded this value (in MB)  |
 | `MAILER_MAX_REQUEST` | `int` | -1 | **Optional**. Service will auto-restart if number of processed request exceeded this value. -1 to disable limit  |
 | `MAILER_RESTART_CRON` | `string` | "" | **Optional**. Service will auto-restart according to Cron pattern ("0 1 * * *" to auto-restart on every 01:00). empty to disable  |
