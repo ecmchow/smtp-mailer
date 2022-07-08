@@ -423,7 +423,9 @@ Response
 ```json
 {
    "status": "success",
-   "data": null,
+   "data": {
+        "removed": 3
+   },
    "message": "removed 3 mails in queue"
 }
 ```
@@ -584,7 +586,9 @@ Response
 ```json
 {
    "status": "success",
-   "data": null,
+   "data": {
+        "removed": 3
+   },
    "message": "removed 3 templates"
 }
 ```
