@@ -645,7 +645,7 @@ final class MailerTest extends TestCase {
         $queueFiles = self::scanQueueJsonFiles();
 
         $this->assertSame(
-            self::expectedResponse('success', null, 'removed ' . strval(count($queueFiles)) . ' mails in queue'),
+            self::expectedResponse('success', ['removed' => count($queueFiles)], 'removed ' . strval(count($queueFiles)) . ' mails in queue'),
             Mailer::authenticateRequest([
                 'clearQueue' => null
             ], null)
@@ -761,7 +761,7 @@ final class MailerTest extends TestCase {
 
     public function testCanClearAllTemplate(): void {
         $this->assertSame(
-            self::expectedResponse('success', null, 'removed 2 templates'),
+            self::expectedResponse('success', ['removed' => 2], 'removed 2 templates'),
             Mailer::authenticateRequest([
                 'clearTemplate' => null
             ], null)

@@ -991,19 +991,23 @@ class Mailer {
             $totalMail = $redis->zCard(self::REDIS_KEY_QUEUE_INDEX);
             if ($totalMail > 0) {
                 $keyList = $redis->zRange(self::REDIS_KEY_QUEUE_INDEX, 0, -1);
+
+                $multi = $redis->multi();
                 foreach ($keyList as $key) {
-                    $redis->del(self::REDIS_KEY_QUEUE_MAIL . $key);
-                    $redis->zRem(self::REDIS_KEY_QUEUE_INDEX, $key);
+                    $multi->del(self::REDIS_KEY_QUEUE_MAIL . $key);
+                    $multi->zRem(self::REDIS_KEY_QUEUE_INDEX, $key);
                 }
+                $multi->exec();
             }
 
-            return self::response('success', null, 'removed ' . strval($totalMail) . ' mails in queue');
+            return self::response('success', ['removed' => $totalMail], 'removed ' . strval($totalMail) . ' mails in queue');
         } else {
             // file-based queue
             $queueDir = Config::getEnv('QUEUE_DIR');
             $jsonList = self::scanQueueDir($queueDir);
 
             if ($jsonList !== false) {
+                $totalMail = count($jsonList);
                 if (count($jsonList) > 0) {
                     foreach ($jsonList as $file) {
                         if (is_file($queueDir . $file)) {
@@ -1011,7 +1015,7 @@ class Mailer {
                         }
                     }
 
-                    return self::response('success', null, 'removed ' . strval(count($jsonList)) . ' mails in queue');
+                    return self::response('success', ['removed' => $totalMail], 'removed ' . strval($totalMail) . ' mails in queue');
                 } else {
                     return self::response('success', [], 'queue list is empty');
                 }
@@ -1269,19 +1273,23 @@ class Mailer {
             $totalTemplate = $redis->zCard(self::REDIS_KEY_TEMPLATE_INDEX);
             if ($totalTemplate > 0) {
                 $keyList = $redis->zRange(self::REDIS_KEY_TEMPLATE_INDEX, 0, -1);
+
+                $multi = $redis->multi();
                 foreach ($keyList as $key) {
-                    $redis->del(self::REDIS_KEY_TEMPLATE . $key);
-                    $redis->zRem(self::REDIS_KEY_TEMPLATE_INDEX, $key);
+                    $multi->del(self::REDIS_KEY_TEMPLATE . $key);
+                    $multi->zRem(self::REDIS_KEY_TEMPLATE_INDEX, $key);
                 }
+                $multi->exec();
             }
 
-            return self::response('success', null, 'removed ' . strval($totalTemplate) . ' templates');
+            return self::response('success', ['removed' => $totalTemplate], 'removed ' . strval($totalTemplate) . ' templates');
         } else {
             // file-based template
             $templateDir = Config::getEnv('EMAIL_TEMPLATE_DIR');
             $templateList = self::scanTemplateDir($templateDir);
 
             if ($templateList !== false) {
+                $totalTemplate = count($templateList);
                 if (count($templateList) > 0) {
                     foreach ($templateList as $file) {
                         if (is_file($templateDir . $file)) {
@@ -1289,7 +1297,7 @@ class Mailer {
                         }
                     }
 
-                    return self::response('success', null, 'removed ' . strval(count($templateList)) . ' templates');
+                    return self::response('success', ['removed' => $totalTemplate], 'removed ' . strval($totalTemplate) . ' templates');
                 } else {
                     return self::response('success', [], 'no template found');
                 }
@@ -1424,36 +1432,6 @@ class Mailer {
             'sent' => $sent !== false ? $sent : 0,
             'failed' => $failed !== false ? $failed : 0
         ], null);
-    }
-
-    /**
-     * connect Slack webhook
-     */
-    protected static function sendSlack($text, $blocks) {
-        $slackWebhook = Config::getEnv('MAILER_SLACK_WEBHOOK');
-
-        if (!empty($slackWebhook)) {
-            try {
-                $msg = [
-                    'text' => $text,
-                    'blocks' => $blocks
-                ];
-                $c = curl_init($slackWebhook);
-                $options = [
-                    CURLOPT_POST => true,
-                    CURLOPT_POSTFIELDS => ['payload' => json_encode($msg)],
-                    CURLOPT_CONNECTTIMEOUT => 10,
-                    CURLOPT_RETURNTRANSFER => true
-                ];
-                curl_setopt_array($c, $options);
-                curl_exec($c);
-                curl_close($c);
-                return true;
-            } catch (\Throwable $e) {
-                Logger::log('error', "sendSlack exception: {$e->getMessage()}");
-            }
-        }
-        return false;
     }
 
     /**

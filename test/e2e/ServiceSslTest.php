@@ -646,7 +646,7 @@ final class ServiceSslTest extends TestCase {
         );
 
         $this->assertSame(
-            self::expectedResponse('success', null, 'removed 1 templates'),
+            self::expectedResponse('success', ['removed' => 1], 'removed 1 templates'),
             self::connect([
                 'clearTemplate' => null
             ])
@@ -669,7 +669,7 @@ final class ServiceSslTest extends TestCase {
         );
 
         $this->assertSame(
-            self::expectedResponse('success', null, 'removed 1 mails in queue'),
+            self::expectedResponse('success', ['removed' => 1], 'removed 1 mails in queue'),
             self::connect([
                 'clearQueue' => null
             ])
