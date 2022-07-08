@@ -29,7 +29,7 @@ use Workerman\Connection\TcpConnection;
 use Workerman\Timer;
 use Workerman\Crontab\Crontab;
 
-const MAILER_VERSION = '1.1.0';
+const MAILER_VERSION = '1.1.1';
 const MAILER_NAME = 'SMTPMailer';
 const QUEUE_NAME = 'SMTPMailQueue';
 
