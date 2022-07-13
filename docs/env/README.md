@@ -89,7 +89,7 @@ php -r "echo password_hash('yourPassword', PASSWORD_BCRYPT, ['cost' => 11]);"
 
 | Parameter | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
-| `REDIS_ENABLE` | `bool` | true | **Required**. Enable Redis integration  |
+| `REDIS_ENABLE` | `bool` | false | **Required**. Enable Redis integration  |
 | `REDIS_PROTO` | `string` | "tcp" | **Optional**. Redis listening protocol. (`tcp` or `tls`)  |
 | `REDIS_ADDR` | `string` | "127.0.0.1" | **Optional**. Redis listening address.  |
 | `REDIS_PORT` | `int` | 6379 | **Optional**. Redis listening port number. |
