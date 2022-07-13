@@ -9,23 +9,17 @@ cache:
   paths:
     - vendor/
 
-before_script:
-  - LC_ALL=C.UTF-8 add-apt-repository ppa:ondrej/php
-  - apt-get update
-
 # PHP 7.4 
 test:7.4:
   stage: test
   script:
-    - apt install -y redis-server php7.4 php7.4-common php7.4-cli php7.4-curl php7.4-mbstring php7.4-redis php7.4-xml php7.4-xdebug php7.4-zip
-    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - service redis-server restart
     - chmod -R +x tools
     - composer install
     - tools/php-cs-fixer-v3.phar fix Core --using-cache=no --diff --dry-run --verbose
     - tools/php-cs-fixer-v3.phar fix start-mailer.php --using-cache=no --diff --dry-run --verbose
     - php tools/phpunit-9.5.phar --testsuite core-units
     - openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -keyout test/selfsigned.key -out test/selfsigned.crt
-    - service redis-server restart
     - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/e2e.log -e start-mailer.php && sleep 0.1
     - cat test/e2e.log
     - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/e2e-redis.log -e start-mailer.php && sleep 0.1
@@ -50,15 +44,13 @@ test:7.4:
 test:8.1:
   stage: test
   script:
-    - apt install -y redis-server php8.1 php8.1-common php8.1-cli php8.1-curl php8.1-mbstring php8.1-redis php8.1-xml php8.1-xdebug php8.1-zip
-    - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+    - service redis-server restart
     - chmod -R +x tools
     - composer install
     - tools/php-cs-fixer-v3.phar fix Core --using-cache=no --diff --dry-run --verbose
     - tools/php-cs-fixer-v3.phar fix start-mailer.php --using-cache=no --diff --dry-run --verbose
     - php tools/phpunit-9.5.phar --testsuite core-units
     - openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -keyout test/selfsigned.key -out test/selfsigned.crt
-    - service redis-server restart
     - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/e2e.log -e start-mailer.php && sleep 0.1
     - cat test/e2e.log
     - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/e2e-redis.log -e start-mailer.php && sleep 0.1
