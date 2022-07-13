@@ -27,15 +27,15 @@ test:7.4:
     - openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -keyout test/selfsigned.key -out test/selfsigned.crt
     - service redis-server restart
     - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/e2e.log -e start-mailer.php && sleep 0.1
-    - less test/e2e.log
+    - cat test/e2e.log
     - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/e2e-redis.log -e start-mailer.php && sleep 0.1
-    - less test/e2e-redis.log
+    - cat test/e2e-redis.log
     - php tools/box.phar compile
     - chmod +x ./dist/smtp-mailer.phar
     - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/build.log -e dist/smtp-mailer.phar -p
-    - less test/build.log
+    - cat test/build.log
     - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/build-redis.log -e dist/smtp-mailer.phar -p
-    - less test/build-redis.log
+    - cat test/build-redis.log
   rules:
     - changes:
       - '**.env'
@@ -60,15 +60,15 @@ test:8.1:
     - openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -keyout test/selfsigned.key -out test/selfsigned.crt
     - service redis-server restart
     - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/e2e.log -e start-mailer.php && sleep 0.1
-    - less test/e2e.log
+    - cat test/e2e.log
     - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/e2e-redis.log -e start-mailer.php && sleep 0.1
-    - less test/e2e-redis.log
+    - cat test/e2e-redis.log
     - php tools/box.phar compile
     - chmod +x ./dist/smtp-mailer.phar
     - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/build.log -e dist/smtp-mailer.phar -p
-    - less test/build.log
+    - cat test/build.log
     - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/build-redis.log -e dist/smtp-mailer.phar -p
-    - less test/build-redis.log
+    - cat test/build-redis.log
   rules:
     - changes:
       - '**.env'
