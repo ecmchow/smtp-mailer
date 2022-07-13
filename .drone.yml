@@ -8,6 +8,7 @@ steps:
   commands:
   - service redis-server restart
   - chmod -R +x tools
+  - composer install
   - tools/php-cs-fixer-v3.phar fix Core --using-cache=no --diff --dry-run --verbose
   - tools/php-cs-fixer-v3.phar fix start-mailer.php --using-cache=no --diff --dry-run --verbose
   - php tools/phpunit-9.5.phar --testsuite core-units
@@ -39,6 +40,7 @@ steps:
   commands:
   - service redis-server restart
   - chmod -R +x tools
+  - composer install
   - tools/php-cs-fixer-v3.phar fix Core --using-cache=no --diff --dry-run --verbose
   - tools/php-cs-fixer-v3.phar fix start-mailer.php --using-cache=no --diff --dry-run --verbose
   - php tools/phpunit-9.5.phar --testsuite core-units
