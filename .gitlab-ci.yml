@@ -12,6 +12,7 @@ test:7.4:
   stage: test
   image: ecmchow/ubuntu-php:focal-7.4
   script:
+    - bash
     - service redis-server restart
     - chmod -R +x tools
     - composer install
@@ -19,15 +20,13 @@ test:7.4:
     - tools/php-cs-fixer-v3.phar fix start-mailer.php --using-cache=no --diff --dry-run --verbose
     - php tools/phpunit-9.5.phar --testsuite core-units
     - openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -keyout test/selfsigned.key -out test/selfsigned.crt
-    - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/e2e.log -e start-mailer.php && sleep 0.1
+    - composer run ci-e2e && sleep 0.1
     - cat test/e2e.log
-    - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/e2e-redis.log -e start-mailer.php && sleep 0.1
     - cat test/e2e-redis.log
-    - php tools/box.phar compile
-    - chmod +x ./dist/smtp-mailer.phar
-    - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/build.log -e dist/smtp-mailer.phar -p
+    - composer run build
+    - chmod +x dist/smtp-mailer.phar
+    - composer run ci-build && sleep 0.1
     - cat test/build.log
-    - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/build-redis.log -e dist/smtp-mailer.phar -p
     - cat test/build-redis.log
   rules:
     - changes:
@@ -44,6 +43,7 @@ test:8.1:
   stage: test
   image: ecmchow/ubuntu-php:focal-8.1
   script:
+    - bash
     - service redis-server restart
     - chmod -R +x tools
     - composer install
@@ -51,15 +51,13 @@ test:8.1:
     - tools/php-cs-fixer-v3.phar fix start-mailer.php --using-cache=no --diff --dry-run --verbose
     - php tools/phpunit-9.5.phar --testsuite core-units
     - openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -keyout test/selfsigned.key -out test/selfsigned.crt
-    - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/e2e.log -e start-mailer.php && sleep 0.1
+    - composer run ci-e2e && sleep 0.1
     - cat test/e2e.log
-    - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/e2e-redis.log -e start-mailer.php && sleep 0.1
     - cat test/e2e-redis.log
-    - php tools/box.phar compile
-    - chmod +x ./dist/smtp-mailer.phar
-    - bash test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/build.log -e dist/smtp-mailer.phar -p
+    - composer run build
+    - chmod +x dist/smtp-mailer.phar
+    - composer run ci-build && sleep 0.1
     - cat test/build.log
-    - bash test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/build-redis.log -e dist/smtp-mailer.phar -p
     - cat test/build-redis.log
   rules:
     - changes:

@@ -79,7 +79,7 @@ jobs:
         run: openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" -keyout test/selfsigned.key -out test/selfsigned.crt
 
       - name: Run e2e tests
-        run: composer run test-e2e
+        run: composer run ci-e2e
 
       - name: Upload e2e test log
         uses: actions/upload-artifact@v3
@@ -87,9 +87,6 @@ jobs:
           name: e2e-test-log-${{ matrix.php-version }}
           path: ./test/e2e.log
           retention-days: 7
-
-      - name: Run Redis e2e tests
-        run: composer run test-e2e:redis
 
       - name: Upload Redis e2e test log
         uses: actions/upload-artifact@v3
@@ -112,7 +109,7 @@ jobs:
         run: chmod +x ./dist/smtp-mailer.phar
 
       - name: Run build test
-        run: composer run test-build
+        run: composer run ci-build
 
       - name: Upload build test log
         uses: actions/upload-artifact@v3
@@ -120,9 +117,6 @@ jobs:
           name: build-test-log-${{ matrix.php-version }}
           path: ./test/build.log
           retention-days: 7
-
-      - name: Run Redis build test
-        run: composer run test-build:redis
 
       - name: Upload Redis build test log
         uses: actions/upload-artifact@v3
