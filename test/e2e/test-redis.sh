@@ -1,14 +1,13 @@
 #!/bin/bash
 
-phar=false
-
-while getopts u:o:e:p flag
+while getopts u:o:e:p:c: flag
 do
     case "${flag}" in
         u) phpunit=${OPTARG};;
         o) output=${OPTARG};;
         e) entry=${OPTARG};;
-        p) phar=true;;
+        p) phar=${OPTARG};;
+        c) ci=${OPTARG};;
     esac
 done
 
@@ -45,12 +44,12 @@ declare -x CMDS=(
 
 # redis-basic
 testRedisBasic () {
-    if [ "$phar" = true ]; then
+    if [ "$phar" = "yes" ]; then
         php "${entry}" start --basepath ../ --env test/env/redis-basic.env & sleep 0.1
     else
         php "${entry}" start --env test/env/redis-basic.env & sleep 0.1
     fi
-    ${phpunit} --testsuite redis-basic || true
+    php "${phpunit}" --testsuite redis-basic || true
     result=$( tail -n 1 ${output} )
     php "${entry}" stop & sleep 0.1
     echo "${result}"
@@ -58,12 +57,12 @@ testRedisBasic () {
 
 # redis-auth
 testRedisAuth () {
-    if [ "$phar" = true ]; then
+    if [ "$phar" = "yes" ]; then
         php "${entry}" start --basepath ../ --env test/env/redis-auth.env & sleep 0.1
     else
         php "${entry}" start --env test/env/redis-auth.env & sleep 0.1
     fi
-    ${phpunit} --testsuite redis-auth || true
+    php "${phpunit}" --testsuite redis-auth || true
     result=$( tail -n 1 ${output} )
     php "${entry}" stop & sleep 0.1
     echo "${result}"
@@ -76,10 +75,18 @@ start () {
 
     while [ "$step" -lt "${#CMDS[@]}" ]; do
         echo -ne "\\n"
-        if [ "$step" == 0 ]; then
-            ${CMDS[$step]} > ${output} 2> /dev/null & pid=$!
+        if [ "$step" = 0 ]; then
+            if [ "$ci" = "yes" ]; then
+                ${CMDS[$step]} > "${output}" 2> /dev/null
+            else
+                ${CMDS[$step]} > "${output}" 2> /dev/null & pid=$!
+            fi
         else
-            ${CMDS[$step]} >> ${output} 2> /dev/null & pid=$!
+            if [ "$ci" = "yes" ]; then
+                ${CMDS[$step]} >> "${output}" 2> /dev/null
+            else
+                ${CMDS[$step]} >> "${output}" 2> /dev/null & pid=$!
+            fi
         fi
 
         while ps -p $pid &>/dev/null; do

@@ -1,14 +1,13 @@
 #!/bin/bash
 
-phar=false
-
-while getopts u:o:e:p flag
+while getopts u:o:e:p:c: flag
 do
     case "${flag}" in
         u) phpunit=${OPTARG};;
         o) output=${OPTARG};;
         e) entry=${OPTARG};;
-        p) phar=true;;
+        p) phar=${OPTARG};;
+        c) ci=${OPTARG};;
     esac
 done
 
@@ -49,53 +48,53 @@ declare -x CMDS=(
 
 # service-basic
 testServiceBasic () {
-    if [ "$phar" = true ]; then
+    if [ "$phar" = "yes" ]; then
         php "${entry}" start --basepath ../ --env test/env/service-basic.env & sleep 0.1
     else
         php "${entry}" start --env test/env/service-basic.env & sleep 0.1
     fi
-    ${phpunit} --testsuite service-basic || true
+    php "${phpunit}" --testsuite service-basic
     result=$( tail -n 1 ${output} )
-    php "${entry}" stop & sleep 0.1
+    php "${entry}" stop
     echo "${result}"
 }
 
 # service-auth
 testServiceAuth () {
-    if [ "$phar" = true ]; then
+    if [ "$phar" = "yes" ]; then
         php "${entry}" start --basepath ../ --env test/env/service-auth.env & sleep 0.1
     else
         php "${entry}" start --env test/env/service-auth.env & sleep 0.1
     fi
-    ${phpunit} --testsuite service-auth || true
+    php "${phpunit}" --testsuite service-auth
     result=$( tail -n 1 ${output} )
-    php "${entry}" stop & sleep 0.1
+    php "${entry}" stop
     echo "${result}"
 }
 
 # service-ssl
 testServiceSSL () {
-    if [ "$phar" = true ]; then
+    if [ "$phar" = "yes" ]; then
         php "${entry}" start --basepath ../ --env test/env/service-ssl.env & sleep 0.1
     else
         php "${entry}" start --env test/env/service-ssl.env & sleep 0.1
     fi
-    ${phpunit} --testsuite service-ssl || true
+    php "${phpunit}" --testsuite service-ssl
     result=$( tail -n 1 ${output} )
-    php "${entry}" stop & sleep 0.1
+    php "${entry}" stop
     echo "${result}"
 }
 
 # service-auth-ssl
 testServiceAuthSSL () {
-    if [ "$phar" = true ]; then
+    if [ "$phar" = "yes" ]; then
         php "${entry}" start --basepath ../ --env test/env/service-auth-ssl.env & sleep 0.1
     else
         php "${entry}" start --env test/env/service-auth-ssl.env & sleep 0.1
     fi
-    ${phpunit} --testsuite service-auth-ssl || true
+    php "${phpunit}" --testsuite service-auth-ssl
     result=$( tail -n 1 ${output} )
-    php "${entry}" stop & sleep 0.1
+    php "${entry}" stop
     echo "${result}"
 }
 # --------- Add/Modify Test ABOVE ---------
@@ -106,10 +105,18 @@ start () {
 
     while [ "$step" -lt "${#CMDS[@]}" ]; do
         echo -ne "\\n"
-        if [ "$step" == 0 ]; then
-            ${CMDS[$step]} > ${output} 2> /dev/null & pid=$!
+        if [ "$step" = 0 ]; then
+            if [ "$ci" = "yes" ]; then
+                ${CMDS[$step]} > "${output}" 2> /dev/null
+            else
+                ${CMDS[$step]} > "${output}" 2> /dev/null & pid=$!
+            fi
         else
-            ${CMDS[$step]} >> ${output} 2> /dev/null & pid=$!
+            if [ "$ci" = "yes" ]; then
+                ${CMDS[$step]} >> "${output}" 2> /dev/null
+            else
+                ${CMDS[$step]} >> "${output}" 2> /dev/null & pid=$!
+            fi
         fi
 
         while ps -p $pid &>/dev/null; do

@@ -45,9 +45,17 @@
             "php tools/php-cs-fixer-v3.phar fix start-mailer.php --using-cache=no"
         ],
         "test-unit": "php tools/phpunit-9.5.phar --testsuite core-units",
-        "test-e2e": "test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/e2e.log -e start-mailer.php",
-        "test-e2e:redis": "test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/e2e-redis.log -e start-mailer.php",
-        "test-build": "test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/build.log -e dist/smtp-mailer.phar -p",
-        "test-build:redis": "test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/build-redis.log -e dist/smtp-mailer.phar -p"
+        "test-e2e": "test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/e2e.log -e start-mailer.php -p no -c no",
+        "test-e2e:redis": "test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/e2e-redis.log -e start-mailer.php -p no -c no",
+        "test-build": "test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/build.log -e dist/smtp-mailer.phar -p yes -c no",
+        "test-build:redis": "test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/build-redis.log -e dist/smtp-mailer.phar -p yes -c no",
+        "ci-e2e": [
+            "test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/e2e.log -e start-mailer.php -p no -c yes",
+            "test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/e2e-redis.log -e start-mailer.php -p no -c yes"
+        ],
+        "ci-build": [
+            "test/e2e/test-service.sh -u tools/phpunit-9.5.phar -o test/build.log -e dist/smtp-mailer.phar -p yes -c yes",
+            "test/e2e/test-redis.sh -u tools/phpunit-9.5.phar -o test/build-redis.log -e dist/smtp-mailer.phar -p yes -c yes"
+        ]
     }
 }
