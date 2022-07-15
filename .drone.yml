@@ -84,6 +84,6 @@ trigger:
   event:
   - push
   - pull_request
-  status:  # always run pipeline regardcat of status
+  status:  # always run
   - success
   - failure
