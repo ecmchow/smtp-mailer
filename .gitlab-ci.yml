@@ -10,7 +10,7 @@ cache:
 # PHP 7.4 
 test:7.4:
   stage: test
-  image: ecmchow/ubuntu-php:focal-7.4
+  image: ecmchow/php-redis:7.4-cli
   script:
     - bash
     - service redis-server restart
@@ -41,7 +41,7 @@ test:7.4:
 # PHP 8.1
 test:8.1:
   stage: test
-  image: ecmchow/ubuntu-php:focal-8.1
+  image: ecmchow/php-redis:8.1-cli
   script:
     - bash
     - service redis-server restart
