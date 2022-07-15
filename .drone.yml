@@ -70,6 +70,7 @@ steps:
   settings:
     webhook:
       from_secret: SLACK_WEBHOOK
+    template: "*{{#success build.status}}:white_check_mark:{{ else }}:x:{{/success}} {{ uppercasefirst build.event }} {{ uppercase build.status }}* \nProject: `{{ repo.owner }}/{{ repo.name }}` ({{ build.branch }})\nBuild #{{ build.number }} ({{ truncate build.commit 8 }}) by {{ build.author }} \n<{{ build.link }}|Drone CI>"
   when:
     status:
     - success
