@@ -232,7 +232,7 @@ Adding mail to current queue
 }
 ```
 
-Adding mail to queue with scheduled send time
+Adding mail to queue with a scheduled send time
 ```json
 {
     "queueMail": {
@@ -256,7 +256,7 @@ Success Response
 ```json
 {
    "status": "success",
-   "data": null,
+   "data": "mail_0000000001657853519.47855600_5775eb2a32b09b0d.json",
    "message": "mail added to queue"
 }
 ```

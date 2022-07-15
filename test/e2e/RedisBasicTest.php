@@ -8,6 +8,8 @@ define('UNITTEST_MOCK_TIME', time());
 
 final class RedisBasicTest extends TestCase {
 
+    private const QUEUE_FILE_REGEX = "/^([\d]+)\.([\d]+)_([a-z0-9]+)/";
+
     private static $templateHTML = '<!doctype html>
     <html lang="en">
     <head>
@@ -393,9 +395,15 @@ final class RedisBasicTest extends TestCase {
      * @dataProvider queueEmailDataProvider
      */
     public function testCanQueueSmtpEmail($input, array $expected): void {
+        $response = self::connect($input);
+
+        if (isset($response['data']) && preg_match(self::QUEUE_FILE_REGEX, $response['data'])) {
+            $expected['data'] = $response['data'];
+        }
+
         $this->assertSame(
             $expected,
-            self::connect($input)
+            $response
         );
     }
 
@@ -469,9 +477,15 @@ final class RedisBasicTest extends TestCase {
      * @dataProvider scheduleEmailDataProvider
      */
     public function testCanScheduleSmtpEmail($input, array $expected): void {
+        $response = self::connect($input);
+
+        if (isset($response['data']) && preg_match(self::QUEUE_FILE_REGEX, $response['data'])) {
+            $expected['data'] = $response['data'];
+        }
+
         $this->assertSame(
             $expected,
-            self::connect($input)
+            $response
         );
     }
 

@@ -614,8 +614,9 @@ class Mailer {
      * @param mixed $data incoming payload
      * @param bool $isFailed is failed mail
      * @param \Redis|null $redis Redis instance
+     * @return array an array of [$outputSuccess, $outputName]
      */
-    protected static function outputMailToQueue($data, bool $isFailed = false, $redis = null): bool {
+    protected static function outputMailToQueue($data, bool $isFailed = false, $redis = null): array {
         $fullEncrypt = Config::getEnv('QUEUE_FULL_ENCRYPT');
         $queueDir = Config::getEnv('QUEUE_DIR');
 
@@ -640,17 +641,17 @@ class Mailer {
             // Redis stored queue
             if ($redis->set(self::REDIS_KEY_QUEUE_MAIL . $key, $fullEncrypt ? Crypto::encrypt(json_encode($data)) : $data)) {
                 // update sorted sets index
-                return $redis->zAdd(self::REDIS_KEY_QUEUE_INDEX, 0, $key) > 0;
+                return [$redis->zAdd(self::REDIS_KEY_QUEUE_INDEX, 0, $key) > 0, $key];
             } else {
                 Logger::log('error', "failed to save queued mail to Redis: {$key}");
             }
-            return false;
+            return [false, $key];
         } else {
             // file-based queue
             $filename = "mail_{$key}.json";
 
             // encrypt full document if needed and save to disk
-            return file_put_contents($queueDir . $filename, $fullEncrypt ? Crypto::encrypt(json_encode($data)) : json_encode($data));
+            return [file_put_contents($queueDir . $filename, $fullEncrypt ? Crypto::encrypt(json_encode($data)) : json_encode($data)), $filename];
         }
     }
 
@@ -666,10 +667,10 @@ class Mailer {
 
         if ($valid) {
             if (!(empty($data['to']) && empty($data['ccList']) && empty($data['bccList']))) {
-                $output = self::outputMailToQueue($data, false, $redis);
-                if ($output) {
+                [$success, $name] = self::outputMailToQueue($data, false, $redis);
+                if ($success) {
                     Logger::log('info', "mail added to queue");
-                    $response = self::response('success', null, 'mail added to queue');
+                    $response = self::response('success', $name, 'mail added to queue');
                 } else {
                     Logger::log('error', "failed to add mail to queue");
                     $response = self::response('error', null, 'failed to add mail to queue');
@@ -700,8 +701,8 @@ class Mailer {
         if ($response['status'] != 'success' && $response['message'] === 'failed to send mail') {
             // push back to queue for retry
             if ($hasQueue && ($maxRetry > 0 || $maxRetry === -1)) {
-                $output = self::outputMailToQueue($data, true, $redis);
-                if ($output) {
+                [$success, $name] = self::outputMailToQueue($data, true, $redis);
+                if ($success) {
                     Logger::log('info', "failed mail added to queue");
                 } else {
                     Logger::log('error', "unable to add failed mail to queue");

@@ -362,9 +362,15 @@ final class ServiceBasicTest extends TestCase {
      * @dataProvider queueEmailDataProvider
      */
     public function testCanQueueSmtpEmail($input, array $expected): void {
+        $response = self::connect($input);
+
+        if (isset($response['data']) && preg_match(self::QUEUE_FILE_REGEX, $response['data'])) {
+            $expected['data'] = $response['data'];
+        }
+
         $this->assertSame(
             $expected,
-            self::connect($input)
+            $response
         );
     }
 
@@ -437,9 +443,15 @@ final class ServiceBasicTest extends TestCase {
      * @dataProvider scheduleEmailDataProvider
      */
     public function testCanScheduleSmtpEmail($input, array $expected): void {
+        $response = self::connect($input);
+
+        if (isset($response['data']) && preg_match(self::QUEUE_FILE_REGEX, $response['data'])) {
+            $expected['data'] = $response['data'];
+        }
+
         $this->assertSame(
             $expected,
-            self::connect($input)
+            $response
         );
     }
 

@@ -340,9 +340,15 @@ final class MailerTest extends TestCase {
      * @dataProvider queueEmailDataProvider
      */
     public function testCanQueueSmtpEmail($input, array $expected): void {
+        $response = Mailer::authenticateRequest($input, null);
+
+        if (isset($response['data']) && preg_match(self::QUEUE_FILE_REGEX, $response['data'])) {
+            $expected['data'] = $response['data'];
+        }
+
         $this->assertSame(
             $expected,
-            Mailer::authenticateRequest($input, null)
+            $response
         );
     }
 
@@ -417,9 +423,15 @@ final class MailerTest extends TestCase {
      * @dataProvider processQueueEmailDataProvider
      */
     public function testCanProcessQueue($input, array $expected): void {
+        $response = Mailer::authenticateRequest($input, null);
+
+        if (isset($response['data']) && preg_match(self::QUEUE_FILE_REGEX, $response['data'])) {
+            $expected['data'] = $response['data'];
+        }
+
         $this->assertSame(
             $expected,
-            Mailer::authenticateRequest($input, null)
+            $response
         );
 
         $this->assertSame(
@@ -489,9 +501,15 @@ final class MailerTest extends TestCase {
      * @dataProvider scheduleEmailDataProvider
      */
     public function testCanScheduleSmtpEmail($input, array $expected): void {
+        $response = Mailer::authenticateRequest($input, null);
+
+        if (isset($response['data']) && preg_match(self::QUEUE_FILE_REGEX, $response['data'])) {
+            $expected['data'] = $response['data'];
+        }
+
         $this->assertSame(
             $expected,
-            Mailer::authenticateRequest($input, null)
+            $response
         );
     }
 
@@ -779,9 +797,15 @@ final class MailerTest extends TestCase {
     public function testCanFullyEncryptQueueFile($input, array $expected): void {
         self::$config = Config::reloadInstance(__DIR__ . '/../env/full-encrypt-enabled.env');
 
+        $response = Mailer::authenticateRequest($input, null);
+
+        if (isset($response['data']) && preg_match(self::QUEUE_FILE_REGEX, $response['data'])) {
+            $expected['data'] = $response['data'];
+        }
+
         $this->assertSame(
             $expected,
-            Mailer::authenticateRequest($input, null)
+            $response
         );
 
         $queueFiles = self::scanQueueJsonFiles();
