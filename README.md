@@ -15,6 +15,8 @@
     <a href="https://github.com/ecmchow/smtp-mailer/issues">Report Bug</a>
     ·
     <a href="https://github.com/ecmchow/smtp-mailer/issues">Request Feature</a>
+    ·
+    <a href="https://hub.docker.com/r/ecmchow/smtp-mailer">Docker Hub</a>
 </p>
 
 <p align="center">
@@ -94,7 +96,7 @@ Running multiple apps with shared SMTP accounts and/or email templates? Want to 
 
 <br/>
 
-## Quickstart with Docker
+## Quickstart with [Docker](https://hub.docker.com/r/ecmchow/smtp-mailer)
 
 Copy the example Docker compose file:
 * [docker-compose.yml](docker-compose.yml)
