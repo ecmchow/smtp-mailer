@@ -34,6 +34,7 @@
     <li><a href="#introduction">Introduction</a></li>
     <li><a href="#features">Features</a></li>
     <li><a href="#dependencies">Dependencies</a></li>
+    <li><a href="#quickstart-with-docker">Quickstart with Docker</a></li>
     <li><a href="#overview">Overview</a></li>
     <li>
       <a href="#getting-started">Getting Started</a>
@@ -91,6 +92,37 @@ Running multiple apps with shared SMTP accounts and/or email templates? Want to 
 * [Workerman](https://github.com/walkor/workerman) >= 4.0
 * [PHPMailer](https://github.com/PHPMailer/PHPMailer) >= 6.5
 
+<br/>
+
+## Quickstart with Docker
+
+Copy the example Docker compose file:
+* [docker-compose.yml](docker-compose.yml)
+
+Before starting the service, make sure you have a setup directories for the queued mail/mail HTML template (ignore if you using Redis data store) and setup a valid SMTP credentials in the service env file. To avoid confusing the default env file for docker compose and the SMTP Mailer service, copy/rename the [.env.example](.env.example) to `.env.service` and change the listening address to `0.0.0.0`:
+```ini
+MAILER_ADDR = "0.0.0.0"
+...
+REDIS_ADDR = "0.0.0.0" ; if you are using Redis
+```
+
+Pass the service env file and directories through the Docker volumes
+```txt
+  smtp_mailer:
+  ...
+    volumes:
+      - /path/to/your/.env.service:/var/www/smtp-mailer/.env # service env file
+      - /path/to/html:/var/www/smtp-mailer/Template/html # HTML Template directory
+      - /path/to/queue-mail:/var/www/smtp-mailer/Queue/mail # Queued mail directory
+      - /path/to/processing-mail:/var/www/smtp-mailer/Queue/temp # Processing mail directory
+```
+
+Run `docker compose up -d` to start the SMTP Mailer service. The service will be available at `tcp://localhost:3000/` by default.
+
+To test the SMTP Mailer service, simple run `echo '{"sendMail":{"to":["example@gmail.com"],"ccList":[],"bccList":[],"attachments":[],"embedded":[],"subject":"Test Email","body":"Test Email Body","fromName":"Test System"}}' | nc localhost 3000`, you should see the following response:
+```json
+{"status":"success","data":null,"message":"mail sent successfully"}
+```
 <br/>
 
 ## Overview

@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  smtp_mailer:
+    image: ecmchow/smtp-mailer:latest
+    container_name: smtp_mailer
+    restart: always
+    volumes:
+      - /path/to/your/.env.service:/var/www/smtp-mailer/.env # service env file
+      - /path/to/html:/var/www/smtp-mailer/Template/html # HTML Template directory
+      - /path/to/queue-mail:/var/www/smtp-mailer/Queue/mail # Queued mail directory
+      - /path/to/processing-mail:/var/www/smtp-mailer/Queue/temp # Processing mail directory
+    ports:
+      - "3000:3000"
+      # - "6379:6379" # Redis port (optional)
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"                                  
+        max-size: "10m"

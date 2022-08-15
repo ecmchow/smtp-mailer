@@ -45,7 +45,7 @@ SMTP Mailer service require an env file in INI format. An example env file is in
 | Parameter | Type | Default | Description |
 | :--- | :--- | :--- | :--- |
 | `MAILER_PROTO` | `string` | "tcp" | **Required**. Service listening protocol. (`tcp` or `ssl`)  |
-| `MAILER_ADDR` | `string` | "127.0.0.1" | **Required**. Service listening address.  |
+| `MAILER_ADDR` | `string` | "127.0.0.1" | **Required**. Service listening address. (use 0.0.0.0 if you are using docker)  |
 | `MAILER_PORT` | `int` | 3000 | **Required**. Service listening port number. |
 | `MAILER_SSL_CERT` | `string` | "" | **Optional**. SSL certificate filepath. E.g. "/path/to/selfsigned.crt"  |
 | `MAILER_SSL_KEY` | `string` | "" | **Optional**. SSL private key filepath. E.g. "/path/to/selfsigned.key"  |
@@ -91,7 +91,7 @@ php -r "echo password_hash('yourPassword', PASSWORD_BCRYPT, ['cost' => 11]);"
 | :--- | :--- | :--- | :--- |
 | `REDIS_ENABLE` | `bool` | false | **Required**. Enable Redis integration  |
 | `REDIS_PROTO` | `string` | "tcp" | **Optional**. Redis listening protocol. (`tcp` or `tls`)  |
-| `REDIS_ADDR` | `string` | "127.0.0.1" | **Optional**. Redis listening address.  |
+| `REDIS_ADDR` | `string` | "127.0.0.1" | **Optional**. Redis listening address. (use 0.0.0.0 if you are using docker)  |
 | `REDIS_PORT` | `int` | 6379 | **Optional**. Redis listening port number. |
 | `REDIS_KEY_PREFIX` | `string` | "SMTP_MAILER:" | **Optional**. Redis key prefix.  |
 | `REDIS_TIMEOUT` | `int` | 0 (in secs) | **Optional**. Redis connection timeout. 0 for unlimited |
