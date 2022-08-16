@@ -125,6 +125,8 @@ To test the SMTP Mailer service, simple run `echo '{"sendMail":{"to":["example@g
 ```json
 {"status":"success","data":null,"message":"mail sent successfully"}
 ```
+
+For detailed service env configuration, please visit the [env documentation](docs/env/README.md). You can view all available request and required schema in the [API documentation](docs/api/README.md).
 <br/>
 
 ## Overview
@@ -172,12 +174,13 @@ sequenceDiagram
 
 ### Prerequisites
 
-PHP >= 7.4 and OpenSSL support is required, with optional Sodium extension. Linux environment is recommended for production deployment. You may run the service locally on your MacOS/Windows machine for development, Windows with WSL is required to run the Mailer service and development tests. Please also note that this is a PHP CLI application, which does not require a web server or process manager such as PHP-FPM to function.
+For non-Docker installation, PHP >= 7.4 and OpenSSL support is required, with optional Sodium extension. Linux environment is recommended for production deployment. You may run the service locally on your MacOS/Windows machine for development, Windows with WSL is required to run the Mailer service and development tests. Please also note that this is a PHP CLI application, which does not require a web server or process manager such as PHP-FPM to function.
 
 ### Installation
 
 There are several ways to install SMTP Mailer
-* [PHAR package](https://github.com/ecmchow/smtp-mailer/releases) (recommended)
+* [Docker](https://hub.docker.com/r/ecmchow/smtp-mailer) (see above [Quickstart](#quickstart-with-docker))
+* [PHAR package](https://github.com/ecmchow/smtp-mailer/releases) (recommended for non-Docker system)
 * [ZIP release](https://github.com/ecmchow/smtp-mailer/releases) (without vendor and development files)
 * Clone the project
 
@@ -253,7 +256,7 @@ Storing queue and/or template are completely optional, you may choose to use Red
 
 Add *sudo* to the following command if the service started/managed by root. To automate and better manage your service on a linux server, please view the [Systemd Service](#systemd-service) section.
 
-Replace `smtp-mailer.phar` with `start-mailer.php` if you are not using PHAR package
+Replace `smtp-mailer.phar` with `start-mailer.php` if you are not using PHAR package or running shell inside Docker container.
 
 Start, stop or restart service (-d to daemonize service, i.e. keep running service after you quit terminal)
 ```console
